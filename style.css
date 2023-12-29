@@ -6,9 +6,6 @@
     font-family: 'Poppins', sans-serif;
 }
 header {
-    position: fixed;
-    top: 0;
-    left: 0;
     width: 100%;
     padding: 30px 100px;
     display: flex;
@@ -104,8 +101,7 @@ header {
     background: #7d2ae8;
 }
 .social-icons {
-    position: absolute;
-    bottom: 50px;
+    
 }
 .social-icons a {
     display: inline-block;
