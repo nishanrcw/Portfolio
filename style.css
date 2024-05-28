@@ -42,14 +42,14 @@ header {
     color: #fff;
     text-decoration: none;
     padding: 8px 35px;
-    background: #7d2ae8;
+    background: #e3874f;
     border-radius: 10px;
-    border: 2px solid #7d2ae8;
+    border: 2px solid #e3874f;
     font-weight: 500;
     transition: .3s;
 }
 .btn-talk:hover {
-    color: #7d2ae8;
+    color: #e3874f;
     background: transparent;
 }
 .home {
@@ -69,7 +69,7 @@ header {
     font-size: 3em;
 }
 .content h2 span {
-    color: #7d2ae8;
+    color: #e3874f;
 }
 .content h4 {
     font-size: 2em;
@@ -81,18 +81,18 @@ header {
     color: #fff;
     text-decoration: none;
     padding: 10px 40px;
-    background: #7d2ae8;
+    background: #e3874f;
     border-radius: 10px;
-    border: 2px solid #7d2ae8;
+    border: 2px solid #e3874f;
     font-weight: 500;
     transition: .3s;
 }
 .btn-group a:hover:nth-child(1) {
-    color: #7d2ae8;
+    color: #e3874f;
     background: transparent;
 }
 .btn-group a:nth-child(2) {
-    color: #7d2ae8;
+    color: #e3874f;
     background: transparent;
     margin-left: 30px;
     padding: 10px 30px;
@@ -108,13 +108,13 @@ header {
     display: inline-block;
     width: 35px;
     height: 35px;
-    background: #37363d;
+    background: #e3874f;
     border-radius: 50%;
     margin-right: 22px;
     text-align: center;
     line-height: 35px;
     border: 1px solid #fff;
-    outline: 2px solid #37363d;
+    outline: 2px solid #e3874f;
     transition: .3s;
 }
 .social-icons a:hover {
