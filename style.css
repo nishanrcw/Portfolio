@@ -99,7 +99,7 @@ header {
 }
 .btn-group a:hover:nth-child(2) {
     color: #fff;
-    background: #7d2ae8;
+    background: #37363d;
 }
 .social-icons {
     
@@ -108,13 +108,13 @@ header {
     display: inline-block;
     width: 35px;
     height: 35px;
-    background: #7d2ae8;
+    background: #37363d;
     border-radius: 50%;
     margin-right: 22px;
     text-align: center;
     line-height: 35px;
     border: 1px solid #fff;
-    outline: 2px solid #7d2ae8;
+    outline: 2px solid #37363d;
     transition: .3s;
 }
 .social-icons a:hover {
