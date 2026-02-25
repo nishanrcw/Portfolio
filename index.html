@@ -2,41 +2,63 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="https://avatars.githubusercontent.com/u/152487030?v=4"
-          type="image/x-icon">
-    <title>Nishan Rai Personal Portfolio Website</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <title>Portfolio | Nishan Rai</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+   
 </head>
-<body>
-    <div class="main-container">
-    <header>
-        <h2 class="logo"><span>N</span>ishan.</h2>
-        <nav class="navigation">
-            <a href="#">Home</a>
-            <a href="#">About</a>
-            <a href="#">Portfolio</a>
-            <a href="#">Blog</a>
-            <a href="#">Contact</a>
-        </nav>
-        <a href="#" class="btn-talk"></a>
-    </header>
-    <section class="home">
-        <div class="content">
-            <h2>Hi, I'm <span>Nishan</span></h2>
-            <h4></h4>
-            <p></p>
-           
-            <div class="social-icons">
-                <a href=https://www.instagram.com/nishan.rcw/"><i class="fa-brands fa-instagram"></i></a>
-                <a href="https://www.facebook.com/Nishan.rcw/"><i class="fa-brands fa-facebook-f"></i></a>
-                <a href="#"><i class="fa-brands fa-twitter"></i></a>
-                <a href="https://www.youtube.com/@NishanRCW"><i class="fa-brands fa-youtube"></i></a>
-            </div>
+<body data-theme="dark">
+
+    <button class="theme-toggle" id="themeButton">
+        <i class="fas fa-sun" id="themeIcon"></i>
+    </button>
+
+    <div class="container">
+        <img src="https://via.placeholder.com/150" alt="Profile" class="profile-pic">
+        <h1>Nishan Rai</h1>
+        <span class="tagline">Developer / Koshi, Nepal</span>
+
+        <div class="time-box">
+            Koshi Time: <span id="nepal-time">--:--:--</span>
         </div>
-    </section>
+
+        <div class="social-icons">
+            <a href="https://www.facebook.com/Nishan.rcw/"><i class="fab fa-facebook"></i></a>
+            <a href="https://www.instagram.com/nishan.rcw/"><i class="fab fa-instagram"></i></a>
+            <a href="https://github.com/nishanrcw"><i class="fab fa-github"></i></a>
+            <a href="https://www.youtube.com/@NishanRCW"><i class="fab fa-youtube"></i></a>
+        </div>
     </div>
+
+    <script>
+        // Theme Switching Logic
+        const themeButton = document.getElementById('themeButton');
+        const themeIcon = document.getElementById('themeIcon');
+        const body = document.body;
+
+        themeButton.addEventListener('click', () => {
+            let currentTheme = body.getAttribute('data-theme');
+            let newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', newTheme);
+            themeIcon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        });
+
+        // Nepal Time Logic
+        function updateTime() {
+            const options = {
+                timeZone: 'Asia/Kathmandu',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            };
+            const formatter = new Intl.DateTimeFormat([], options);
+            document.getElementById('nepal-time').innerHTML = formatter.format(new Date());
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
 </body>
 </html>
