@@ -7,11 +7,10 @@
     <link rel="icon" type="image/x-icon" href="pic/icon.png">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-   
 </head>
 <body data-theme="dark">
     <button class="theme-toggle" id="themeButton">
-        <i class="fas fa-sun" id="themeIcon"></i>
+        <i class="fas fa-moon" id="themeIcon"></i>
     </button>
 
     <div class="container">
@@ -30,7 +29,7 @@
             <a href="https://www.youtube.com/@NishanRCW"><i class="fab fa-youtube"></i></a>
         </div>
     </div>
-
+    <script src="script.js"></script>
     <script>
         // Theme Switching Logic
         const themeButton = document.getElementById('themeButton');
@@ -41,7 +40,7 @@
             let currentTheme = body.getAttribute('data-theme');
             let newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             body.setAttribute('data-theme', newTheme);
-            themeIcon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            themeIcon.className = newTheme === 'dark' ? 'fas fa-moon'  : 'fas fa-sun';
         });
 
         // Nepal Time Logic
