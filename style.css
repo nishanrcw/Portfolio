@@ -49,13 +49,13 @@
         }
 
         .profile-pic {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            filter: grayscale(100%);
-            margin-bottom: 20px;
+            width: 250px;
+            height: 250px;
+            border-radius: 100%;
+            filter: grayscale(1%);
+            margin-bottom: 10px;
             border: 1px solid var(--text);
-            padding: 5px;
+            padding: 1px;
         }
 
         h1 {
