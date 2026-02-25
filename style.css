@@ -12,7 +12,7 @@
 header {
     width: 100%;
     padding: 30px 100px;
-    display: none;
+    display: block;
     justify-content: ;
     align-items: center;
 }
