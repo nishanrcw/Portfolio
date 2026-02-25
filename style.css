@@ -1,0 +1,98 @@
+:root {
+            /* Defaulting to Dark Mode Variables */
+            --bg: #121212;
+            --text: #f0f0f0;
+            --accent: #ff4d7d;
+            --card-bg: #1e1e1e;
+        }
+
+        [data-theme="light"] {
+            --bg: #ffffff;
+            --text: #1a1a1a;
+            --accent: #bc204b;
+            --card-bg: #f9f9f9;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', -apple-system, sans-serif;
+            transition: background 0.4s ease, color 0.4s ease;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            background: none;
+            border: 1px solid var(--text);
+            padding: 8px 12px;
+            border-radius: 20px;
+            color: var(--text);
+            opacity: 0.6;
+            transition: 0.3s;
+        }
+
+        .theme-toggle:hover { opacity: 1; }
+
+        .container {
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .profile-pic {
+            width: 250px;
+            height: 250px;
+            border-radius: 100%;
+            filter: grayscale(1%);
+            margin-bottom: 10px;
+            border: 1px solid var(--text);
+            padding: 1px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin: 0;
+            letter-spacing: -1.5px;
+        }
+
+        .tagline {
+            color: var(--accent);
+            font-weight: 500;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .time-box {
+            font-size: 0.8rem;
+            margin: 25px 0;
+            letter-spacing: 1px;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .social-icons a {
+            color: var(--text);
+            font-size: 1.2rem;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .social-icons a:hover {
+            color: var(--accent);
+        }
