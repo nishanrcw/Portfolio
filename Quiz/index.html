@@ -213,27 +213,46 @@ const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRs1pFvBe
 
     // A basic CSV parser helper that respects quotes around cells
     function parseCSV(text) {
-        const lines = text.split('\n');
-        const headers = lines[0].split(',').map(h => h.trim());
-        const result = [];
+    const lines = text.split('\n');
+    // Clean up headers and handle hidden carriage returns (\r)
+    const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+    const result = [];
 
-        for (let i = 1; i < lines.length; i++) {
-            if (!lines[i].trim()) continue;
-            
-            // Regex to split comma-separated lines while preserving commas inside quotes
-            const matches = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || lines[i].split(',');
-            const row = matches.map(val => val.replace(/^"|"$/g, '').trim());
-            
-            if (row.length >= headers.length) {
-                let obj = {};
-                headers.forEach((header, index) => {
-                    obj[header] = row[index];
-                });
-                result.push(obj);
+    for (let i = 1; i < lines.length; i++) {
+        let line = lines[i].trim();
+        if (!line) continue;
+        
+        let row = [];
+        let insideQuote = false;
+        let currentCell = '';
+        
+        // Loop through each character to properly preserve text inside quotation marks
+        for (let j = 0; j < line.length; j++) {
+            let char = line[j];
+            if (char === '"') {
+                insideQuote = !insideQuote; // Toggle quote state
+            } else if (char === ',' && !insideQuote) {
+                row.push(currentCell.trim());
+                currentCell = '';
+            } else {
+                currentCell += char;
             }
         }
-        return result;
+        row.push(currentCell.trim()); // Push the last cell
+
+        // Map row elements safely to their respective headers
+        if (row.length >= headers.length) {
+            let obj = {};
+            headers.forEach((header, index) => {
+                // Remove trailing/leading quote leftovers from spreadsheet generation
+                let cleanValue = row[index] ? row[index].replace(/^"|"$/g, '') : '';
+                obj[header] = cleanValue;
+            });
+            result.push(obj);
+        }
     }
+    return result;
+}
 
     function showQuestion() {
         hasAnswered = false;
