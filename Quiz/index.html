@@ -1,1 +1,324 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bible Quiz Game</title>
+    <style>
+        :root {
+            --primary: #2b5876;
+            --secondary: #4e4376;
+            --background: #f5f7fa;
+            --card-bg: #ffffff;
+            --text: #333333;
+            --success: #2ecc71;
+            --error: #e74c3c;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            color: var(--text);
+        }
+
+        .quiz-container {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 600px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .difficulty {
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .question-text {
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .option-btn {
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background-color: #e9ecef;
+            border-color: #ced4da;
+            transform: translateY(-2px);
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        .correct {
+            background-color: var(--success) !important;
+            color: white !important;
+            border-color: var(--success) !important;
+        }
+
+        .wrong {
+            background-color: var(--error) !important;
+            color: white !important;
+            border-color: var(--error) !important;
+        }
+
+        .reference-box {
+            background-color: #e8f4fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
+            text-align: left;
+            display: none;
+        }
+
+        .next-btn, .restart-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            display: none;
+            margin: 0 auto;
+            transition: opacity 0.2s;
+        }
+
+        .next-btn:hover {
+            opacity: 0.9;
+        }
+
+        .score-screen {
+            display: none;
+        }
+
+        .score-text {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 20px 0;
+            color: var(--primary);
+        }
+
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <div id="loading">
+        <div class="loader"></div>
+        <p>Loading Quiz Data from Google Sheets...</p>
+    </div>
+
+    <div id="quiz-screen" style="display: none;">
+        <div class="quiz-header">
+            <span id="progress">Question 1 of 10</span>
+            <span id="difficulty" class="difficulty">Easy</span>
+        </div>
+        <div id="question" class="question-text">Question loading...</div>
+        <div id="options" class="options-grid">
+            <button class="option-btn" onclick="checkAnswer('A')">A) <span id="optA"></span></button>
+            <button class="option-btn" onclick="checkAnswer('B')">B) <span id="optB"></span></button>
+            <button class="option-btn" onclick="checkAnswer('C')">C) <span id="optC"></span></button>
+            <button class="option-btn" onclick="checkAnswer('D')">D) <span id="optD"></span></button>
+        </div>
+        <div id="reference" class="reference-box"></div>
+        <button id="next-btn" class="next-btn" onclick="nextQuestion()">Next Question</button>
+    </div>
+
+    <div id="score-screen" class="score-screen">
+        <h2>Quiz Completed!</h2>
+        <div id="score" class="score-text">0 / 0</div>
+        <p id="feedback-msg"></p>
+        <button class="restart-btn" style="display: block;" onclick="restartQuiz()">Play Again</button>
+    </div>
+</div>
+
+<script>
+    // REPLACE THIS URL WITH YOUR EXPORTED CSV LINK FROM GOOGLE SHEETS
+const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRs1pFvBeCfJ6rWxM6uH6MAxTtv81j1p9Gh_NZWK3Ulb9DCjo2xJqYar347-9vJHPsRhof_I1-ZIh-T/pub?gid=1652591117&single=true&output=csv';
+
+    let quizData = [];
+    let currentIdx = 0;
+    let score = 0;
+    let hasAnswered = false;
+
+    // Fetch and Parse CSV Data on Load
+    async function initQuiz() {
+        try {
+            const response = await fetch(SHEET_CSV_URL);
+            const csvText = await response.text();
+            quizData = parseCSV(csvText);
+            
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('quiz-screen').style.display = 'block';
+            showQuestion();
+        } catch (error) {
+            console.error("Error loading quiz data:", error);
+            document.getElementById('loading').innerHTML = `<p style="color:red">Failed to load quiz data. Check console or URL accessibility.</p>`;
+        }
+    }
+
+    // A basic CSV parser helper that respects quotes around cells
+    function parseCSV(text) {
+        const lines = text.split('\n');
+        const headers = lines[0].split(',').map(h => h.trim());
+        const result = [];
+
+        for (let i = 1; i < lines.length; i++) {
+            if (!lines[i].trim()) continue;
+            
+            // Regex to split comma-separated lines while preserving commas inside quotes
+            const matches = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || lines[i].split(',');
+            const row = matches.map(val => val.replace(/^"|"$/g, '').trim());
+            
+            if (row.length >= headers.length) {
+                let obj = {};
+                headers.forEach((header, index) => {
+                    obj[header] = row[index];
+                });
+                result.push(obj);
+            }
+        }
+        return result;
+    }
+
+    function showQuestion() {
+        hasAnswered = false;
+        document.getElementById('next-btn').style.display = 'none';
+        document.getElementById('reference').style.display = 'none';
+        
+        // Reset option button styles
+        const buttons = document.querySelectorAll('.option-btn');
+        buttons.forEach(btn => {
+            btn.className = 'option-btn';
+            btn.disabled = false;
+        });
+
+        const q = quizData[currentIdx];
+        document.getElementById('progress').innerText = `Question ${currentIdx + 1} of ${quizData.length}`;
+        document.getElementById('difficulty').innerText = q['Difficulty'] || 'Medium';
+        document.getElementById('question').innerText = q['Question'];
+        document.getElementById('optA').innerText = q['Option A'];
+        document.getElementById('optB').innerText = q['Option B'];
+        document.getElementById('optC').innerText = q['Option C'];
+        document.getElementById('optD').innerText = q['Option D'];
+    }
+
+    function checkAnswer(selectedLetter) {
+        if (hasAnswered) return;
+        hasAnswered = true;
+
+        const q = quizData[currentIdx];
+        const correctAnswer = q['Correct Answer'].trim().toUpperCase();
+        const buttons = document.querySelectorAll('.option-btn');
+        
+        // Disable choices
+        buttons.forEach(btn => btn.disabled = true);
+
+        // Highlight right and wrong selections
+        const letterToIndex = { 'A': 0, 'B': 1, 'C': 2, 'D': 3 };
+        if (selectedLetter === correctAnswer) {
+            buttons[letterToIndex[selectedLetter]].classList.add('correct');
+            score++;
+        } else {
+            buttons[letterToIndex[selectedLetter]].classList.add('wrong');
+            buttons[letterToIndex[correctAnswer]].classList.add('correct'); // reveal correct
+        }
+
+        // Show context/scripture reference
+        if (q['Reference']) {
+            const refBox = document.getElementById('reference');
+            refBox.innerHTML = `<strong>Scripture Context:</strong> ${q['Reference']}`;
+            refBox.style.display = 'block';
+        }
+
+        document.getElementById('next-btn').style.display = 'block';
+    }
+
+    function nextQuestion() {
+        currentIdx++;
+        if (currentIdx < quizData.length) {
+            showQuestion();
+        } else {
+            showScoreScreen();
+        }
+    }
+
+    function showScoreScreen() {
+        document.getElementById('quiz-screen').style.display = 'none';
+        document.getElementById('score-screen').style.display = 'block';
+        document.getElementById('score').innerText = `${score} / ${quizData.length}`;
+        
+        let feedback = "Keep studying the word!";
+        if (score === quizData.length) feedback = "Amazing! Perfect score!";
+        else if (score >= quizData.length * 0.7) feedback = "Great job, strong knowledge!";
+        
+        document.getElementById('feedback-msg').innerText = feedback;
+    }
+
+    function restartQuiz() {
+        currentIdx = 0;
+        score = 0;
+        document.getElementById('score-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'block';
+        showQuestion();
+    }
+
+    // Run app
+    initQuiz();
+</script>
+</body>
+</html>
